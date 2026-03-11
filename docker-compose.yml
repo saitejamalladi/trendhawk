@@ -11,7 +11,9 @@ services:
       NODE_ENV: production
       PORT: ${PORT:-3000}
       LLM_PROVIDER: ${LLM_PROVIDER:-openai}
-      MONGODB_URI: mongodb://mongo:27017/trendhawk
+      # Use the Docker service name and credentials defined on the mongo service
+      # so the app container can reach MongoDB inside the compose network.
+      MONGODB_URI: mongodb://root:password@mongo:27017/trendhawk?authSource=admin
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
       OPENAI_EMBEDDING_MODEL: ${OPENAI_EMBEDDING_MODEL:-text-embedding-3-small}
@@ -41,6 +43,9 @@ services:
     container_name: trendhawk-mongo
     ports:
       - '27017:27017'
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password
     volumes:
       - mongo-data:/data/db
     healthcheck:

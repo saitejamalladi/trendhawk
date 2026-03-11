@@ -27,10 +27,17 @@ export class ReportRepository {
   async upsertByUrl(
     dto: CreateReportDto,
   ): Promise<TrendingResourceDocument | null> {
-    return this.model.findOneAndUpdate({ url: dto.url }, dto, {
-      upsert: true,
-      new: true,
-    });
+    return this.model.findOneAndUpdate(
+      { url: dto.url },
+      dto,
+      {
+        upsert: true,
+        // `new` is kept for backwards compatibility; `returnDocument`
+        // is the modern option that avoids deprecation warnings.
+        new: true,
+        returnDocument: 'after',
+      },
+    );
   }
 
   async findById(id: string): Promise<TrendingResourceDocument | null> {

@@ -58,10 +58,42 @@ export class ReportGenerationService {
           (result) => result.repoUrl === candidate.url && !result.valid,
         )?.issues;
 
-        const response = await llm.invoke(
-          this.buildGenerationMessages(candidate, retryIssues),
+        const messages = this.buildGenerationMessages(
+          candidate,
+          retryIssues,
         );
+
+        this.logger.debug(
+          `LLM generation prompt for ${candidate.repoFullName}:\n${messages
+            .map((m) => (typeof m === 'string' ? m : JSON.stringify(m)))
+            .join('\n')}`,
+        );
+
+        const response = await llm.invoke(messages);
         const sections = this.parseSectionsResponse(response.content);
+
+        const usage: any =
+          (response as any).usage_metadata ??
+          (response as any).response_metadata?.tokenUsage ??
+          (response as any).response_metadata?.usage;
+
+        if (usage) {
+          const inputTokens =
+            usage.input_tokens ?? usage.prompt_tokens ?? usage.inputTokens;
+          const outputTokens =
+            usage.output_tokens ??
+            usage.completion_tokens ??
+            usage.outputTokens;
+          const totalTokens = usage.total_tokens ?? usage.totalTokens;
+
+          this.logger.debug(
+            `LLM generation token usage for ${
+              candidate.repoFullName
+            } — input: ${inputTokens ?? 'n/a'}, output: ${
+              outputTokens ?? 'n/a'
+            }, total: ${totalTokens ?? 'n/a'}`,
+          );
+        }
         const reportMarkdown = this.buildMarkdown(candidate, sections);
 
         return {

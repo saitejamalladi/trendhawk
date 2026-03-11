@@ -37,6 +37,22 @@ The agent performs the following steps autonomously:
     ```
     Open `.env` and fill in your API keys (e.g., `OPENAI_API_KEY`). See the [Environment Variables](#environment-variables) section below for details.
 
+## Obtaining API Keys
+
+### Google Gemini (Generative AI)
+1.  Go to [Google AI Studio](https://aistudio.google.com/).
+2.  Click on **Get API key** in the top-left corner.
+3.  Click **Create API key** (you can create it in a new or existing Google Cloud project).
+4.  Copy the key and paste it into your `.env` file as `GOOGLE_API_KEY`.
+
+### LangSmith (Tracing, optional)
+1.  Sign up or log in to [LangSmith](https://smith.langchain.com/).
+2.  Click the **Settings** (gear icon) in the bottom-left sidebar.
+3.  Go to the **API Keys** tab.
+4.  Click **Create API Key**.
+5.  Copy the key and paste it as `LANGCHAIN_API_KEY` in `.env`.
+6.  Set `LANGCHAIN_TRACING_V2=true` to enable tracing.
+
 ## Running the Application
 
 ### Option 1: Run Locally (Development)

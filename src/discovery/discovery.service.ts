@@ -40,18 +40,47 @@ export class DiscoveryService {
     const discoveredWeek = this.getDiscoveredWeek(asOf);
     const llm = this.llmFactory.create();
 
+    const systemPrompt = this.buildSystemPrompt();
+    const userPrompt = this.buildUserPrompt({
+      asOf,
+      lookbackDays,
+      maxCandidates,
+      prioritizedSources:
+        options.prioritizedSources ?? DEFAULT_PRIORITIZED_SOURCES,
+    });
+
+    this.logger.debug(`LLM discovery system prompt for ${discoveredWeek}:\n${systemPrompt}`);
+    this.logger.debug(`LLM discovery user prompt for ${discoveredWeek}:\n${userPrompt}`);
+
     const response = await llm.invoke([
-      new SystemMessage(this.buildSystemPrompt()),
-      new HumanMessage(
-        this.buildUserPrompt({
-          asOf,
-          lookbackDays,
-          maxCandidates,
-          prioritizedSources:
-            options.prioritizedSources ?? DEFAULT_PRIORITIZED_SOURCES,
-        }),
-      ),
+      new SystemMessage(systemPrompt),
+      new HumanMessage(userPrompt),
     ]);
+
+    this.logger.debug(
+      `LLM discovery raw response for ${discoveredWeek}:\n${this.getMessageText(
+        response.content,
+      )}`,
+    );
+
+    const usage: any =
+      (response as any).usage_metadata ??
+      (response as any).response_metadata?.tokenUsage ??
+      (response as any).response_metadata?.usage;
+
+    if (usage) {
+      const inputTokens =
+        usage.input_tokens ?? usage.prompt_tokens ?? usage.inputTokens;
+      const outputTokens =
+        usage.output_tokens ?? usage.completion_tokens ?? usage.outputTokens;
+      const totalTokens = usage.total_tokens ?? usage.totalTokens;
+
+      this.logger.debug(
+        `LLM discovery token usage — input: ${inputTokens ?? 'n/a'}, output: ${
+          outputTokens ?? 'n/a'
+        }, total: ${totalTokens ?? 'n/a'}`,
+      );
+    }
 
     const parsed = this.parseModelResponse(response.content);
     const normalized = this.normalizeCandidates(

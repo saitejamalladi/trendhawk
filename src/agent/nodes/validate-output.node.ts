@@ -4,7 +4,7 @@ import type { ReportValidationService } from '../../report/report-validation.ser
 
 const logger = new Logger('validateOutputNode');
 
-const MAX_RETRIES = 2;
+const MAX_RETRIES = 20;
 
 /**
  * Node: validateOutput

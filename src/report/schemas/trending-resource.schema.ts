@@ -54,8 +54,18 @@ export class TrendingResource {
 export const TrendingResourceSchema =
   SchemaFactory.createForClass(TrendingResource);
 
-// Text search index for description and name
-TrendingResourceSchema.index({ name: 'text', description: 'text' });
+// Text search index for description and name.
+// Explicitly set language_override to a non-existent field so that the
+// document's `language` property (e.g. "JavaScript") is *not* interpreted
+// as a text search language override, which would trigger
+// "language override unsupported" errors.
+TrendingResourceSchema.index(
+  { name: 'text', description: 'text' },
+  {
+    default_language: 'none',
+    language_override: 'searchLanguage',
+  },
+);
 
 // Compound index to facilitate deduplication lookups within a given week
 TrendingResourceSchema.index({ discoveredWeek: 1, url: 1 }, { unique: true });
