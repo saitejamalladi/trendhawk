@@ -24,7 +24,7 @@ export function createFilterDuplicatesNode(reportService: ReportService) {
 
     return {
       uniqueRepos: state.candidateRepos,
-      error: null,
+      error: state.error,
     };
   };
 }

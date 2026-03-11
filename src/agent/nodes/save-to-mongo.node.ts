@@ -37,6 +37,6 @@ export function createSaveToMongoNode(reportService: ReportService) {
       }
     }
 
-    return { error: null };
+    return { error: state.error };
   };
 }

@@ -36,7 +36,7 @@ export function createValidateOutputNode() {
     return {
       validationResults,
       retryCount: allValid ? state.retryCount : state.retryCount + 1,
-      error: null,
+      error: state.error,
     };
   };
 }

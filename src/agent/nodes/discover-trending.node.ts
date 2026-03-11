@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common';
-import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import type { AgentStateType } from '../agent.state';
+import type { DiscoveryService } from '../../discovery/discovery.service';
 
 const logger = new Logger('discoverTrendingNode');
 
@@ -13,16 +13,34 @@ const logger = new Logger('discoverTrendingNode');
  *
  * Target output: up to 20 CandidateRepo objects in state.candidateRepos.
  */
-export function createDiscoverTrendingNode(llm: BaseChatModel) {
-  // eslint-disable-next-line @typescript-eslint/require-await
+export function createDiscoverTrendingNode(discoveryService: DiscoveryService) {
   return async (state: AgentStateType): Promise<Partial<AgentStateType>> => {
-    logger.log('discoverTrending — placeholder (subtask-04 will implement)');
-    void llm; // will be used in subtask-04
+    logger.log('discoverTrending — researching trending repositories');
     void state;
 
-    return {
-      candidateRepos: [],
-      error: null,
-    };
+    try {
+      const discoveredRepos =
+        await discoveryService.discoverTrendingRepositories();
+
+      logger.log(
+        `discoverTrending — discovered ${discoveredRepos.length} candidate repo(s)`,
+      );
+
+      return {
+        discoveredRepos,
+        candidateRepos: discoveredRepos,
+        error: null,
+      };
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Unknown discovery failure';
+      logger.error(`discoverTrending failed: ${message}`);
+
+      return {
+        discoveredRepos: [],
+        candidateRepos: [],
+        error: `Discovery failed: ${message}`,
+      };
+    }
   };
 }
