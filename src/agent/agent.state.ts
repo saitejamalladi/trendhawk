@@ -1,6 +1,7 @@
 import { Annotation } from '@langchain/langgraph';
 import type {
   CandidateRepo,
+  DeduplicationDecision,
   GeneratedReport,
   ValidationResult,
 } from './agent.types';
@@ -26,6 +27,12 @@ export const AgentState = Annotation.Root({
 
   /** Candidates remaining after URL/embedding deduplication. */
   uniqueRepos: Annotation<CandidateRepo[]>({
+    reducer: (_prev, next) => next,
+    default: () => [],
+  }),
+
+  /** Deduplication decisions captured during filterDuplicates. */
+  deduplicationDecisions: Annotation<DeduplicationDecision[]>({
     reducer: (_prev, next) => next,
     default: () => [],
   }),

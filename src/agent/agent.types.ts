@@ -33,6 +33,23 @@ export interface ValidationResult {
   repoUrl: string;
 }
 
+export interface DeduplicationDecision {
+  action: 'kept' | 'excluded';
+  category:
+    | 'historical-url'
+    | 'historical-semantic'
+    | 'batch-url'
+    | 'batch-string'
+    | 'selection-cap'
+    | 'selected'
+    | 'fallback';
+  repoUrl: string;
+  repoFullName: string;
+  reason: string;
+  matchedRepoUrl?: string;
+  similarity?: number;
+}
+
 /** Names used for LangGraph graph nodes. */
 export const GRAPH_NODES = {
   DISCOVER_TRENDING: 'discoverTrending',
