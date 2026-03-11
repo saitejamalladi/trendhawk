@@ -2,8 +2,9 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { StateGraph, END, START } from '@langchain/langgraph';
 import { DeduplicationService } from '../dedup/deduplication.service';
 import { DiscoveryService } from '../discovery/discovery.service';
-import { LlmFactory } from '../llm/llm.factory';
+import { ReportGenerationService } from '../report/report-generation.service';
 import { ReportService } from '../report/report.service';
+import { ReportValidationService } from '../report/report-validation.service';
 import { AgentState, type AgentStateType } from './agent.state';
 import { GRAPH_NODES } from './agent.types';
 import { createDiscoverTrendingNode } from './nodes/discover-trending.node';
@@ -25,8 +26,9 @@ export class AgentService implements OnModuleInit {
   constructor(
     private readonly deduplicationService: DeduplicationService,
     private readonly discoveryService: DiscoveryService,
-    private readonly llmFactory: LlmFactory,
+    private readonly reportGenerationService: ReportGenerationService,
     private readonly reportService: ReportService,
+    private readonly reportValidationService: ReportValidationService,
   ) {}
 
   /** Build and compile the LangGraph on module initialisation. */
@@ -36,8 +38,6 @@ export class AgentService implements OnModuleInit {
   }
 
   private buildGraph() {
-    const llm = this.llmFactory.create();
-
     const workflow = new StateGraph(AgentState)
       // ── Nodes ───────────────────────────────────────────────────────────
       .addNode(
@@ -48,8 +48,14 @@ export class AgentService implements OnModuleInit {
         GRAPH_NODES.FILTER_DUPLICATES,
         createFilterDuplicatesNode(this.deduplicationService),
       )
-      .addNode(GRAPH_NODES.GENERATE_REPORTS, createGenerateReportsNode(llm))
-      .addNode(GRAPH_NODES.VALIDATE_OUTPUT, createValidateOutputNode())
+      .addNode(
+        GRAPH_NODES.GENERATE_REPORTS,
+        createGenerateReportsNode(this.reportGenerationService),
+      )
+      .addNode(
+        GRAPH_NODES.VALIDATE_OUTPUT,
+        createValidateOutputNode(this.reportValidationService),
+      )
       .addNode(
         GRAPH_NODES.SAVE_TO_MONGO,
         createSaveToMongoNode(this.reportService),
