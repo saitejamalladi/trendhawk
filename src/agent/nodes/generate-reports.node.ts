@@ -31,7 +31,7 @@ export function createGenerateReportsNode(llm: BaseChatModel) {
 
     return {
       reports,
-      error: null,
+      error: state.error,
     };
   };
 }

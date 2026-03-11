@@ -1,3 +1,5 @@
+import type { DiscoverySource } from '../discovery/discovery.types';
+
 /**
  * Shared domain types for the TrendHawk agent flow.
  * These are plain data objects — no ORM dependencies.
@@ -10,6 +12,8 @@ export interface CandidateRepo {
   name: string;
   description: string;
   language?: string;
+  whyTrending: string;
+  sources: DiscoverySource[];
   stars: number;
   forks: number;
   topics: string[];

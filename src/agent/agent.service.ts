@@ -1,5 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { StateGraph, END, START } from '@langchain/langgraph';
+import { DiscoveryService } from '../discovery/discovery.service';
 import { LlmFactory } from '../llm/llm.factory';
 import { ReportService } from '../report/report.service';
 import { AgentState, type AgentStateType } from './agent.state';
@@ -21,6 +22,7 @@ export class AgentService implements OnModuleInit {
   private graph!: ReturnType<AgentService['buildGraph']>;
 
   constructor(
+    private readonly discoveryService: DiscoveryService,
     private readonly llmFactory: LlmFactory,
     private readonly reportService: ReportService,
   ) {}
@@ -36,7 +38,10 @@ export class AgentService implements OnModuleInit {
 
     const workflow = new StateGraph(AgentState)
       // ── Nodes ───────────────────────────────────────────────────────────
-      .addNode(GRAPH_NODES.DISCOVER_TRENDING, createDiscoverTrendingNode(llm))
+      .addNode(
+        GRAPH_NODES.DISCOVER_TRENDING,
+        createDiscoverTrendingNode(this.discoveryService),
+      )
       .addNode(
         GRAPH_NODES.FILTER_DUPLICATES,
         createFilterDuplicatesNode(this.reportService),

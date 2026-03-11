@@ -13,6 +13,12 @@ import type {
  */
 export const AgentState = Annotation.Root({
   /** Raw candidates discovered by discoverTrending (up to 20). */
+  discoveredRepos: Annotation<CandidateRepo[]>({
+    reducer: (_prev, next) => next,
+    default: () => [],
+  }),
+
+  /** Raw candidates discovered by discoverTrending (up to 20). */
   candidateRepos: Annotation<CandidateRepo[]>({
     reducer: (_prev, next) => next,
     default: () => [],
