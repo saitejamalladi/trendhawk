@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common';
 import type { AgentStateType } from '../agent.state';
-import type { ReportService } from '../../report/report.service';
+import type { DeduplicationService } from '../../dedup/deduplication.service';
 
 const logger = new Logger('filterDuplicatesNode');
 
@@ -14,16 +14,25 @@ const logger = new Logger('filterDuplicatesNode');
  *
  * Target output: state.uniqueRepos with duplicates excluded.
  */
-export function createFilterDuplicatesNode(reportService: ReportService) {
-  // eslint-disable-next-line @typescript-eslint/require-await
+export function createFilterDuplicatesNode(
+  deduplicationService: DeduplicationService,
+) {
   return async (state: AgentStateType): Promise<Partial<AgentStateType>> => {
     logger.log(
-      `filterDuplicates — ${state.candidateRepos.length} candidates (subtask-05 will implement dedup)`,
+      `filterDuplicates — evaluating ${state.candidateRepos.length} candidates`,
     );
-    void reportService; // will be used in subtask-05
+
+    const result = await deduplicationService.deduplicateCandidates(
+      state.candidateRepos,
+    );
+
+    logger.log(
+      `filterDuplicates — selected ${result.uniqueRepos.length} unique repo(s), ${result.decisions.filter((decision) => decision.action === 'excluded').length} excluded`,
+    );
 
     return {
-      uniqueRepos: state.candidateRepos,
+      uniqueRepos: result.uniqueRepos,
+      deduplicationDecisions: result.decisions,
       error: state.error,
     };
   };
