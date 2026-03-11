@@ -13,9 +13,19 @@ const logger = new Logger('saveToMongoNode');
  */
 export function createSaveToMongoNode(reportService: ReportService) {
   return async (state: AgentStateType): Promise<Partial<AgentStateType>> => {
-    logger.log(`saveToMongo — saving ${state.reports.length} reports`);
+    const validReportUrls = new Set(
+      state.validationResults
+        .filter((result) => result.valid)
+        .map((result) => result.repoUrl),
+    );
+    const reportsToSave = state.reports.filter((report) =>
+      validReportUrls.has(report.url),
+    );
+    logger.log(`saveToMongo — saving ${reportsToSave.length} valid report(s)`);
 
-    for (const report of state.reports) {
+    const failures: string[] = [];
+
+    for (const report of reportsToSave) {
       try {
         await reportService.upsertByUrl({
           url: report.url,
@@ -34,9 +44,15 @@ export function createSaveToMongoNode(reportService: ReportService) {
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         logger.error(`Failed to save ${report.url}: ${message}`);
+        failures.push(`${report.url}: ${message}`);
       }
     }
 
-    return { error: state.error };
+    return {
+      error:
+        failures.length > 0
+          ? `Failed to save ${failures.length} report(s): ${failures.join('; ')}`
+          : state.error,
+    };
   };
 }
