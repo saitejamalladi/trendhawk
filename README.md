@@ -138,7 +138,7 @@ Retrieve a single report by its MongoDB ID.
 | `MONGODB_URI` | Connection string for MongoDB. | `mongodb://localhost:27017/trendhawk` |
 | `LLM_PROVIDER` | The LLM provider to use (`openai`, `anthropic`, `google`). | `openai` |
 | `OPENAI_API_KEY` | API key for OpenAI. | - |
-| `OPENAI_MODEL` | Chat model for OpenAI. | `gpt-4o-mini` |
+| `OPENAI_MODEL` | Chat model for OpenAI. | `o4-mini-deep-research` |
 | `ANTHROPIC_API_KEY` | API key for Anthropic. | - |
 | `ANTHROPIC_MODEL` | Chat model for Anthropic. | `claude-3-5-haiku-latest` |
 | `GOOGLE_API_KEY` | API key for Google Gemini. | - |
