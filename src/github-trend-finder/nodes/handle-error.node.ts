@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import type { AgentStateType } from '../agent.state';
+import type { AgentStateType } from '../github-trend-finder.state';
 
 const logger = new Logger('handleErrorNode');
 

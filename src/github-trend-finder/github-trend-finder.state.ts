@@ -4,7 +4,7 @@ import type {
   DeduplicationDecision,
   GeneratedReport,
   ValidationResult,
-} from './agent.types';
+} from './github-trend-finder.types';
 
 /**
  * LangGraph state annotation for the TrendHawk agent.

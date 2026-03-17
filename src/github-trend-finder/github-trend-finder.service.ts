@@ -1,12 +1,12 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { StateGraph, END, START } from '@langchain/langgraph';
+import { END, START, StateGraph } from '@langchain/langgraph';
 import { DeduplicationService } from '../dedup/deduplication.service';
 import { DiscoveryService } from '../discovery/discovery.service';
 import { ReportGenerationService } from '../report/report-generation.service';
 import { ReportService } from '../report/report.service';
 import { ReportValidationService } from '../report/report-validation.service';
-import { AgentState, type AgentStateType } from './agent.state';
-import { GRAPH_NODES } from './agent.types';
+import { AgentState, type AgentStateType } from './github-trend-finder.state';
+import { GRAPH_NODES } from './github-trend-finder.types';
 import { createDiscoverTrendingNode } from './nodes/discover-trending.node';
 import { createFilterDuplicatesNode } from './nodes/filter-duplicates.node';
 import { createGenerateReportsNode } from './nodes/generate-reports.node';
@@ -18,10 +18,10 @@ import { createSaveToMongoNode } from './nodes/save-to-mongo.node';
 import { createHandleErrorNode } from './nodes/handle-error.node';
 
 @Injectable()
-export class AgentService implements OnModuleInit {
-  private readonly logger = new Logger(AgentService.name);
+export class GithubTrendFinderService implements OnModuleInit {
+  private readonly logger = new Logger(GithubTrendFinderService.name);
 
-  private graph!: ReturnType<AgentService['buildGraph']>;
+  private graph!: ReturnType<GithubTrendFinderService['buildGraph']>;
 
   constructor(
     private readonly deduplicationService: DeduplicationService,

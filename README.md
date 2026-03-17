@@ -84,12 +84,12 @@ The server will be available at `http://localhost:3000`.
 The API is prefixed with `/api`. An interactive Swagger documentation is available at:
 **[http://localhost:3000/api/docs](http://localhost:3000/api/docs)**
 
-### Agent Endpoints
+### GitHub Trend Finder Endpoints
 
 #### Trigger Report Generation
 Triggers the full agent workflow to discover, filter, and generate reports.
 
-- **URL:** `/api/agent/report/generate`
+- **URL:** `/api/github-trend-finder/report/generate`
 - **Method:** `POST`
 - **Response:**
   ```json
@@ -153,7 +153,8 @@ Retrieve a single report by its MongoDB ID.
 
 ```
 src/
-├── agent/       # LangGraph agent logic (nodes, state, flow)
+├── agent/       # API layer (controllers) that calls orchestrators
+├── github-trend-finder/ # GitHub trend finding LangGraph orchestration (nodes/state/flow)
 ├── dedup/       # Deduplication service (similarity search)
 ├── discovery/   # Repository discovery logic
 ├── llm/         # LLM factory and provider abstraction

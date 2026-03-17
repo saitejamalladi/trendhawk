@@ -1,4 +1,7 @@
-import type { GeneratedReport, ValidationResult } from '../agent/agent.types';
+import type {
+  GeneratedReport,
+  ValidationResult,
+} from '../github-trend-finder/github-trend-finder.types';
 import { ReportGenerationService } from './report-generation.service';
 import type { EmbeddingService } from '../llm/embedding.service';
 import type { LlmFactory } from '../llm/llm.factory';

@@ -1,5 +1,5 @@
 import { createDiscoverTrendingNode } from './discover-trending.node';
-import type { CandidateRepo } from '../agent.types';
+import type { CandidateRepo } from '../github-trend-finder.types';
 import type { DiscoveryService } from '../../discovery/discovery.service';
 
 describe('createDiscoverTrendingNode', () => {

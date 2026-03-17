@@ -1,14 +1,14 @@
 import { Controller, Post, HttpCode, HttpStatus, Logger } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AgentService } from './agent.service';
+import { GithubTrendFinderService } from '../github-trend-finder/github-trend-finder.service';
 import { AgentRunResponseDto } from './dto/agent-run-response.dto';
 
-@ApiTags('agent')
-@Controller('agent')
+@ApiTags('github-trend-finder')
+@Controller('github-trend-finder')
 export class AgentController {
   private readonly logger = new Logger(AgentController.name);
 
-  constructor(private readonly agentService: AgentService) {}
+  constructor(private readonly trendFinderService: GithubTrendFinderService) {}
 
   @Post('report/generate')
   @HttpCode(HttpStatus.OK)
@@ -20,9 +20,9 @@ export class AgentController {
   })
   @ApiResponse({ status: 200, type: AgentRunResponseDto })
   async generate(): Promise<AgentRunResponseDto> {
-    this.logger.log('POST /api/agent/report/generate received');
+    this.logger.log('POST /api/github-trend-finder/report/generate received');
 
-    const state = await this.agentService.runAgent();
+    const state = await this.trendFinderService.runAgent();
 
     return {
       reportsGenerated: state.reports.length,

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { LlmFactory } from '../llm/llm.factory';
-import type { CandidateRepo } from '../agent/agent.types';
+import type { CandidateRepo } from '../github-trend-finder/github-trend-finder.types';
 import type {
   DiscoveryModelResponse,
   DiscoveryOptions,

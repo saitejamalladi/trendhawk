@@ -1,4 +1,4 @@
-import type { CandidateRepo } from '../agent/agent.types';
+import type { CandidateRepo } from '../github-trend-finder/github-trend-finder.types';
 
 const NON_ALPHANUMERIC_REGEX = /[^a-z0-9]+/g;
 
