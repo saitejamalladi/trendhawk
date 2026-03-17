@@ -101,7 +101,7 @@ export class DiscoveryService {
       'You are TrendHawk, a concise research assistant for trending GitHub repositories.',
       'Focus only on repositories with notable community momentum during the requested time window.',
       'Prefer widely discussed open-source projects and avoid speculative or stale picks.',
-      'Return valid JSON only with no markdown fences or extra commentary.',
+      'Return valid JSON only with no markdown fences or extra commentary. ',
     ].join(' ');
   }
 
@@ -129,7 +129,7 @@ export class DiscoveryService {
       '- stars, forks, topics when known',
       'Use this JSON shape exactly:',
       '{"candidates":[{"url":"https://github.com/owner/repo","repoFullName":"owner/repo","name":"repo","description":"summary","language":"TypeScript","whyTrending":"reason","sources":[{"name":"GitHub Trending","type":"github-trending","url":"https://github.com/trending"}],"stars":0,"forks":0,"topics":["ai"]}]}',
-      'Do not include repositories without enough confidence, and never exceed the maximum count.',
+      'Do not include repositories without enough confidence, and never exceed the maximum count. Your response should be only in json format. No need of any texts',
     ].join('\n');
   }
 

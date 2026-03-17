@@ -42,10 +42,19 @@ export class LlmFactory {
 
   private createOpenAI(): ChatOpenAI {
     const apiKey = this.config.getOrThrow<string>('OPENAI_API_KEY');
+    const baseURL =
+      this.config.get<string>('OPENAI_CHAT_BASE_URL') ??
+      this.config.get<string>('OPENAI_BASE_URL');
+
+    if (baseURL) {
+      this.logger.log(`Using OpenAI-compatible baseURL for chat: ${baseURL}`);
+    }
+
     return new ChatOpenAI({
       apiKey,
       model: this.config.get<string>('OPENAI_MODEL', 'gpt-4o-mini'),
       temperature: 0.3,
+      configuration: baseURL ? { baseURL } : undefined,
     });
   }
 

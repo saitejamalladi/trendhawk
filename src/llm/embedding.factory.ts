@@ -14,6 +14,7 @@ export class EmbeddingFactory {
   create(overrideProvider?: LlmProvider): Embeddings | null {
     const provider =
       overrideProvider ??
+      (this.config.get<string>('EMBEDDINGS_PROVIDER') as LlmProvider) ??
       (this.config.get<string>('LLM_PROVIDER', 'openai') as LlmProvider);
 
     this.logger.log(`Creating embeddings for provider: ${provider}`);
