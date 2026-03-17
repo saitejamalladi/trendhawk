@@ -1,4 +1,4 @@
-import type { CandidateRepo } from '../agent/agent.types';
+import type { CandidateRepo } from '../github-trend-finder/github-trend-finder.types';
 import { DeduplicationService } from './deduplication.service';
 import type { EmbeddingService } from '../llm/embedding.service';
 import type { ReportService } from '../report/report.service';

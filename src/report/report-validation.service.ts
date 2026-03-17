@@ -4,7 +4,7 @@ import type {
   CandidateRepo,
   GeneratedReport,
   ValidationResult,
-} from '../agent/agent.types';
+} from '../github-trend-finder/github-trend-finder.types';
 import { LlmFactory } from '../llm/llm.factory';
 
 type JsonRecord = Record<string, unknown>;
@@ -31,18 +31,42 @@ export class ReportValidationService {
       return [];
     }
 
-    // TEMPORARY: short-circuit validation and treat all reports as valid.
-    // This disables both deterministic and LLM-based checks so the agent
-    // can run end-to-end without retry loops while debugging.
-    this.logger.warn(
-      'Report validation is temporarily disabled; marking all reports as valid.',
-    );
+    const llm = this.llmFactory.create();
 
-    return candidates.map((candidate) => ({
-      valid: true,
-      issues: [],
-      repoUrl: candidate.url,
-    }));
+    return Promise.all(
+      candidates.map(async (candidate) => {
+        const report = reports.find((item) => item.url === candidate.url);
+
+        if (!report) {
+          return {
+            valid: false,
+            issues: ['No generated report was provided for this repository.'],
+            repoUrl: candidate.url,
+          };
+        }
+
+        const deterministicIssues = this.runDeterministicChecks(
+          candidate,
+          report,
+        );
+
+        if (deterministicIssues.length > 0) {
+          return {
+            valid: false,
+            issues: deterministicIssues,
+            repoUrl: candidate.url,
+          };
+        }
+
+        const modelIssues = await this.runModelValidation(candidate, report, llm);
+
+        return {
+          valid: modelIssues.length === 0,
+          issues: modelIssues,
+          repoUrl: candidate.url,
+        };
+      }),
+    );
   }
 
   private runDeterministicChecks(

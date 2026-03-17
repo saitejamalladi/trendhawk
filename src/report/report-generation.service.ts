@@ -7,7 +7,7 @@ import type {
   CandidateRepo,
   GeneratedReport,
   ValidationResult,
-} from '../agent/agent.types';
+} from '../github-trend-finder/github-trend-finder.types';
 
 interface ReportSections {
   whyItMatters: string;

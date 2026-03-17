@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import type {
   CandidateRepo,
   DeduplicationDecision,
-} from '../agent/agent.types';
+} from '../github-trend-finder/github-trend-finder.types';
 import { EmbeddingService } from '../llm/embedding.service';
 import { ReportService } from '../report/report.service';
 import {
